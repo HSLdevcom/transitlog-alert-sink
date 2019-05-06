@@ -4,32 +4,37 @@
 
 SET ROLE creator;
 
-CREATE TYPE CANCELLATION_STATUS AS ENUM ('RUNNING', 'CANCELED');
-
-CREATE TABLE cancellation (
+CREATE TABLE alert (
     id                    BIGSERIAL PRIMARY KEY,
     created_at            TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     modified_at           TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    status                CANCELLATION_STATUS NOT NULL,
-    start_date            DATE,
     route_id              TEXT,
-    direction_id          SMALLINT,
-    start_time            TEXT, -- String hhmmss 30 hour clock?
-    ext_id_dvj            TEXT -- Optional field for dvj-id. Might be useful at some point or for troubleshooting
+    stop_id               TEXT,
+    affects_all_routes    BOOLEAN,
+    affects_all_stops     BOOLEAN,
+    valid_from            TIMESTAMPTZ,
+    valid_to              TIMESTAMPTZ,
+    last_modified         TIMESTAMPTZ,
+    json_schema_version   SMALLINT DEFAULT 1,
+    data                  jsonb,
+    ext_id_bulletin       TEXT
 );
 
-ALTER TABLE cancellation ADD CONSTRAINT unique_cancellation_constraint UNIQUE (status, start_date, route_id, direction_id, start_time);
+ALTER TABLE alert ADD CONSTRAINT unique_alert_route_constraint UNIQUE (route_id, valid_from, valid_to, last_modified);
+ALTER TABLE alert ADD CONSTRAINT unique_alert_stop_constraint UNIQUE (stop_id, valid_from, valid_to, last_modified);
+ALTER TABLE alert ADD CONSTRAINT unique_alert_all_routes_all_stops_constraint UNIQUE (affects_all_routes, affects_all_stops, valid_from, valid_to, last_modified);
 
-CREATE INDEX cancellation_start_date_time_idx ON cancellation(start_date, start_time);
-CREATE INDEX cancellation_trip_identifier_tuple_idx ON cancellation(start_date, route_id, direction_id, start_time);
+CREATE INDEX alert_route_idx ON alert(valid_from, valid_to, route_id);
+CREATE INDEX alert_stop_idx ON alert(valid_from, valid_to, stop_id);
+CREATE INDEX alert_all_routes_idx ON alert(valid_from, valid_to, affects_all_routes);
+CREATE INDEX alert_all_stops_idx ON alert(valid_from, valid_to, affects_all_stops);
 
-GRANT INSERT, UPDATE ON TABLE cancellation TO hfp_writer;
-GRANT SELECT ON TABLE cancellation TO PUBLIC;
+GRANT INSERT, UPDATE ON TABLE alert TO hfp_writer;
+GRANT SELECT ON TABLE alert TO PUBLIC;
 
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA PUBLIC TO hfp_writer;
 
--- TimescaleDB Hypertable required?
--- SELECT create_hypertable('trip_events',
---                         'created_at',
---                         partitioning_column => 'start_date',
---                         chunk_time_interval => interval '1 hour');
+-- SELECT create_hypertable('alert', 'created_at', if_not_exists => true);
+-- SELECT add_dimension('alert', 'start_datetime', chunk_time_interval => interval '1 day', if_not_exists => true);
+-- SELECT add_dimension('alert', 'end_datetime', chunk_time_interval => interval '1 day', if_not_exists => true);
+
