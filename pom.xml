@@ -1,7 +1,7 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.hsl.transitlog</groupId>
-    <artifactId>transitlog-cancellation-writer</artifactId>
+    <artifactId>transitlog-alert-sink</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
@@ -42,7 +42,7 @@
     </dependencies>
 
     <build>
-        <finalName>transitlog-cancellation-writer</finalName>
+        <finalName>transitlog-alert-sink</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>

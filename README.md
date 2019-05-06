@@ -1,8 +1,8 @@
-[![Build Status](https://travis-ci.org/HSLdevcom/transitlog-cancellation-writer.svg?branch=master)](https://travis-ci.org/HSLdevcom/transitlog-cancellation-writer)
+[![Build Status](https://travis-ci.org/HSLdevcom/transitlog-alert-sink.svg?branch=master)](https://travis-ci.org/HSLdevcom/transitlog-alert-sink)
 
 ## Description
 
-Application for inserting trip cancellations to PostgreSQL.
+Application for inserting service alerts to PostgreSQL.
 
 
 ## Setup:

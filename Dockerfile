@@ -27,6 +27,6 @@ FROM openjdk:8-jre-slim
 
 #This container can access the build artifacts inside the BUILD container.
 #Everything that is not copied is discarded
-COPY --from=BUILD /usr/src/app/target/transitlog-cancellation-writer-jar-with-dependencies.jar /usr/app/transitlog-cancellation-writer.jar
+COPY --from=BUILD /usr/src/app/target/transitlog-alert-sink-jar-with-dependencies.jar /usr/app/transitlog-alert-sink.jar
 
-ENTRYPOINT ["java", "-jar", "/usr/app/transitlog-cancellation-writer.jar"]
+ENTRYPOINT ["java", "-jar", "/usr/app/transitlog-alert-sink.jar"]
