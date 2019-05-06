@@ -1,4 +1,4 @@
-package fi.hsl.transitlog.cancellations;
+package fi.hsl.transitlog.alerts;
 
 import com.typesafe.config.Config;
 import fi.hsl.common.config.ConfigParser;
@@ -12,7 +12,7 @@ public class Main {
 
 
     public static void main(String[] args) {
-        log.info("Launching Transitlog-cancellation-writer.");
+        log.info("Launching transitlog-alert-sink.");
 
         Config config = ConfigParser.createConfig();
 

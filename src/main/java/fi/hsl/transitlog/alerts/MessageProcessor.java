@@ -1,4 +1,4 @@
-package fi.hsl.transitlog.cancellations;
+package fi.hsl.transitlog.alerts;
 
 import fi.hsl.common.pulsar.IMessageHandler;
 
@@ -26,9 +26,12 @@ public class MessageProcessor implements IMessageHandler {
 
     @Override
     public void handleMessage(Message message) throws Exception {
-        if (TransitdataSchema.hasProtobufSchema(message, TransitdataProperties.ProtobufSchema.InternalMessagesTripCancellation)) {
-            InternalMessages.TripCancellation cancellation = InternalMessages.TripCancellation.parseFrom(message.getData());
-            writer.insert(cancellation);
+        if (TransitdataSchema.hasProtobufSchema(message, TransitdataProperties.ProtobufSchema.TransitdataServiceAlert)) {
+            InternalMessages.ServiceAlert alert = InternalMessages.ServiceAlert.parseFrom(message.getData());
+
+            for (final InternalMessages.Bulletin bulletin : alert.getBulletinsList()) {
+                writer.insert(bulletin);
+            }
         }
         else {
             log.warn("Invalid protobuf schema");
