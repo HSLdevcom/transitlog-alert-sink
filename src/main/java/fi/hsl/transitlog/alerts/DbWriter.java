@@ -26,15 +26,12 @@ public class DbWriter {
         connection = conn;
     }
 
-    public static DbWriter newInstance(Config config) throws Exception {
-        final String connectionString = config.getString("db.connectionString");
-        final String user = config.getString("db.username");
-        final String password = config.getString("db.password");
+    public static DbWriter newInstance(Config config, final String connectionString) throws Exception {
         final String timeZone = config.getString("db.timezone");
         calendar = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
 
-        log.info("Connecting to the database with connection string " + connectionString);
-        Connection conn = DriverManager.getConnection(connectionString, user, password);
+        log.info("Connecting to the database");
+        Connection conn = DriverManager.getConnection(connectionString);
         conn.setAutoCommit(true);
         log.info("Connection success");
         return new DbWriter(conn);
