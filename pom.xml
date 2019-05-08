@@ -84,7 +84,7 @@
                             <archiveBaseDirectory>${project.basedir}</archiveBaseDirectory>
                             <archive>
                                 <manifest>
-                                    <mainClass>fi.hsl.transitlog.hfp.Main</mainClass>
+                                    <mainClass>fi.hsl.transitlog.alerts.Main</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
