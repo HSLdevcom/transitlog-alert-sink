@@ -9,7 +9,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <common.version>1.0.2</common.version>
+        <common.version>1.0.4</common.version>
         <jackson.version>2.9.8</jackson.version>
     </properties>
 
@@ -84,7 +84,7 @@
                             <archiveBaseDirectory>${project.basedir}</archiveBaseDirectory>
                             <archive>
                                 <manifest>
-                                    <mainClass>fi.hsl.transitlog.hfp.Main</mainClass>
+                                    <mainClass>fi.hsl.transitlog.alerts.Main</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
