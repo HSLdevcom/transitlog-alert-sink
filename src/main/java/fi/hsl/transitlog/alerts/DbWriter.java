@@ -134,6 +134,14 @@ public class DbWriter {
                 descriptions.add(description);
             }
 
+            final ArrayNode urls = json.putArray("urls");
+            for (final InternalMessages.Bulletin.Translation translation : bulletin.getUrlsList()) {
+                final ObjectNode url = JsonNodeFactory.instance.objectNode();
+                url.put("text", translation.getText());
+                url.put("language", translation.getLanguage());
+                urls.add(url);
+            }
+
             setNullable(index++, json.toString(), Types.VARCHAR, statement);
 
             setNullable(index++, bulletin.getBulletinId(), Types.VARCHAR, statement);
