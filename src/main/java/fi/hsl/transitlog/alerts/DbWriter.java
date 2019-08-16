@@ -84,19 +84,24 @@ public class DbWriter {
         try (PreparedStatement statement = connection.prepareStatement(queryString)) {
             int index = 1;
 
-            switch (type) {
-                case ROUTE:
-                    setNullable(index++, entity.getEntityId(), Types.VARCHAR, statement);
-                    setNullable(index++, null, Types.VARCHAR, statement);
-                    break;
-                case STOP:
-                    setNullable(index++, null, Types.VARCHAR, statement);
-                    setNullable(index++, entity.getEntityId(), Types.VARCHAR, statement);
-                    break;
-                default:
-                    setNullable(index++, null, Types.VARCHAR, statement);
-                    setNullable(index++, null, Types.VARCHAR, statement);
-                    break;
+            if (type == null) {
+                setNullable(index++, null, Types.VARCHAR, statement);
+                setNullable(index++, null, Types.VARCHAR, statement);
+            } else {
+                switch (type) {
+                    case ROUTE:
+                        setNullable(index++, entity.getEntityId(), Types.VARCHAR, statement);
+                        setNullable(index++, null, Types.VARCHAR, statement);
+                        break;
+                    case STOP:
+                        setNullable(index++, null, Types.VARCHAR, statement);
+                        setNullable(index++, entity.getEntityId(), Types.VARCHAR, statement);
+                        break;
+                    default:
+                        setNullable(index++, null, Types.VARCHAR, statement);
+                        setNullable(index++, null, Types.VARCHAR, statement);
+                        break;
+                }
             }
             if (bulletin.hasAffectsAllRoutes() && bulletin.getAffectsAllRoutes()) {
                 setNullable(index++, bulletin.getAffectsAllRoutes(), Types.BOOLEAN, statement);
