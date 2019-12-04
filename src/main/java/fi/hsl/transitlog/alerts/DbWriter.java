@@ -26,11 +26,19 @@ public class DbWriter {
         connection = conn;
     }
 
-    public static DbWriter newInstance(Config config, final String connectionString) throws Exception {
+    public static DbWriter newInstance(Config config) throws Exception {
         final String timeZone = config.getString("db.timezone");
         calendar = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
 
-        log.info("Connecting to the database");
+        final String dbAddress = config.getString("db.address");
+        log.info("Connecting to database: "+ dbAddress);
+
+        final String dbUsername = config.getString("db.username");
+        final String dbPassword = config.getString("db.password");
+
+        final String connectionString = "jdbc:postgresql://$" + dbAddress + "/citus?user=" + dbUsername
+                + "&sslmode=require&reWriteBatchedInserts=true&password="+ dbPassword;
+
         Connection conn = DriverManager.getConnection(connectionString);
         conn.setAutoCommit(true);
         log.info("Connection success");
