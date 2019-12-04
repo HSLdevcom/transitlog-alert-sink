@@ -32,4 +32,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl
 #Everything that is not copied is discarded
 COPY --from=BUILD /usr/src/app/target/transitlog-alert-sink-jar-with-dependencies.jar /usr/app/transitlog-alert-sink.jar
 
-ENTRYPOINT ["java", "-jar", "/usr/app/transitlog-alert-sink.jar"]
+COPY run /run
+COPY start-application.sh /
+RUN chmod +x /start-application.sh
+CMD ["/start-application.sh"]
