@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl
 
 #This container can access the build artifacts inside the BUILD container.
 #Everything that is not copied is discarded
-ADD target/transitlog-alert-sink.jar /usr/app/transitlog-alert-sink.jar
+ADD target/transitlog-alert-sink-jar-with-dependencies.jar /usr/app/transitlog-alert-sink.jar
 
 COPY start-application.sh /
 RUN chmod +x /start-application.sh
