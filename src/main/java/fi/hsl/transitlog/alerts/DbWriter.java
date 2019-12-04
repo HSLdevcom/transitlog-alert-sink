@@ -15,7 +15,6 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-
 public class DbWriter {
     private static final Logger log = LoggerFactory.getLogger(DbWriter.class);
     private static Calendar calendar;
@@ -33,10 +32,10 @@ public class DbWriter {
         final String dbAddress = config.getString("db.address");
         log.info("Connecting to database: "+ dbAddress);
 
-        final String dbUsername = config.getString("db.username");
-        final String dbPassword = config.getString("db.password");
+        final String dbUsername = System.getProperty("db.username");
+        final String dbPassword = System.getProperty("db.password");
 
-        final String connectionString = "jdbc:postgresql://$" + dbAddress + "/citus?user=" + dbUsername
+        final String connectionString = "jdbc:postgresql://" + dbAddress + "/citus?user=" + dbUsername
                 + "&sslmode=require&reWriteBatchedInserts=true&password="+ dbPassword;
 
         Connection conn = DriverManager.getConnection(connectionString);
