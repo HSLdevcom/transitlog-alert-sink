@@ -26,15 +26,12 @@ public class DbWriter {
         connection = conn;
     }
 
-    public static DbWriter newInstance(Config config) throws Exception {
-        final String connectionString = config.getString("db.connectionString");
-        final String user = config.getString("db.username");
-        final String password = config.getString("db.password");
+    public static DbWriter newInstance(Config config, final String connectionString) throws Exception {
         final String timeZone = config.getString("db.timezone");
         calendar = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
 
-        log.info("Connecting to the database with connection string " + connectionString);
-        Connection conn = DriverManager.getConnection(connectionString, user, password);
+        log.info("Connecting to the database");
+        Connection conn = DriverManager.getConnection(connectionString);
         conn.setAutoCommit(true);
         log.info("Connection success");
         return new DbWriter(conn);
@@ -87,19 +84,24 @@ public class DbWriter {
         try (PreparedStatement statement = connection.prepareStatement(queryString)) {
             int index = 1;
 
-            switch (type) {
-                case ROUTE:
-                    setNullable(index++, entity.getEntityId(), Types.VARCHAR, statement);
-                    setNullable(index++, null, Types.VARCHAR, statement);
-                    break;
-                case STOP:
-                    setNullable(index++, null, Types.VARCHAR, statement);
-                    setNullable(index++, entity.getEntityId(), Types.VARCHAR, statement);
-                    break;
-                default:
-                    setNullable(index++, null, Types.VARCHAR, statement);
-                    setNullable(index++, null, Types.VARCHAR, statement);
-                    break;
+            if (type == null) {
+                setNullable(index++, null, Types.VARCHAR, statement);
+                setNullable(index++, null, Types.VARCHAR, statement);
+            } else {
+                switch (type) {
+                    case ROUTE:
+                        setNullable(index++, entity.getEntityId(), Types.VARCHAR, statement);
+                        setNullable(index++, null, Types.VARCHAR, statement);
+                        break;
+                    case STOP:
+                        setNullable(index++, null, Types.VARCHAR, statement);
+                        setNullable(index++, entity.getEntityId(), Types.VARCHAR, statement);
+                        break;
+                    default:
+                        setNullable(index++, null, Types.VARCHAR, statement);
+                        setNullable(index++, null, Types.VARCHAR, statement);
+                        break;
+                }
             }
             if (bulletin.hasAffectsAllRoutes() && bulletin.getAffectsAllRoutes()) {
                 setNullable(index++, bulletin.getAffectsAllRoutes(), Types.BOOLEAN, statement);
@@ -135,6 +137,14 @@ public class DbWriter {
                 description.put("text", translation.getText());
                 description.put("language", translation.getLanguage());
                 descriptions.add(description);
+            }
+
+            final ArrayNode urls = json.putArray("urls");
+            for (final InternalMessages.Bulletin.Translation translation : bulletin.getUrlsList()) {
+                final ObjectNode url = JsonNodeFactory.instance.objectNode();
+                url.put("text", translation.getText());
+                url.put("language", translation.getLanguage());
+                urls.add(url);
             }
 
             setNullable(index++, json.toString(), Types.VARCHAR, statement);

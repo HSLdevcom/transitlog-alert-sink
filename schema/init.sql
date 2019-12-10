@@ -26,8 +26,13 @@ ALTER TABLE alert ADD CONSTRAINT unique_alert_all_routes_all_stops_constraint UN
 
 CREATE INDEX alert_route_idx ON alert(valid_from, valid_to, route_id);
 CREATE INDEX alert_stop_idx ON alert(valid_from, valid_to, stop_id);
+CREATE INDEX alert_route_valid_to_idx ON alert(valid_to, route_id);
+CREATE INDEX alert_stop_valid_to_idx ON alert(valid_to, stop_id);
 CREATE INDEX alert_all_routes_idx ON alert(valid_from, valid_to, affects_all_routes);
 CREATE INDEX alert_all_stops_idx ON alert(valid_from, valid_to, affects_all_stops);
+CREATE INDEX alert_all_routes_valid_to_idx ON alert(valid_to, affects_all_routes);
+CREATE INDEX alert_all_stops_valid_to_idx ON alert(valid_to, affects_all_stops);
+
 
 GRANT INSERT, UPDATE ON TABLE alert TO hfp_writer;
 GRANT SELECT ON TABLE alert TO PUBLIC;
