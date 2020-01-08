@@ -20,8 +20,7 @@ public class Main {
         log.info("Configuration read, launching the main loop");
         DbWriter writer = null;
         try (PulsarApplication app = PulsarApplication.newInstance(config)) {
-            final String connectionString = ConfigUtils.getConnectionStringFromFileOrThrow(Optional.of("/run/secrets/db_conn_string"));
-            writer = DbWriter.newInstance(config, connectionString);
+            writer = DbWriter.newInstance(config);
             MessageProcessor processor = new MessageProcessor(app, writer);
             log.info("Starting to process messages");
 

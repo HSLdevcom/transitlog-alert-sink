@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.hsl.transitlog</groupId>
     <artifactId>transitlog-alert-sink</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -45,7 +45,6 @@
             <artifactId>jackson-annotations</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -68,28 +67,45 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.1.0</version>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
                 <executions>
+                    <!-- Run shade goal on package phase -->
                     <execution>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <archiveBaseDirectory>${project.basedir}</archiveBaseDirectory>
-                            <archive>
-                                <manifest>
-                                    <mainClass>fi.hsl.transitlog.alerts.Main</mainClass>
-                                </manifest>
-                            </archive>
-                            <descriptorRefs>
-                                <descriptorRef>jar-with-dependencies</descriptorRef>
-                            </descriptorRefs>
+                            <transformers>
+                                <!-- add Main-Class to manifest file -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>fi.hsl.transitlog.alerts.Main</mainClass> </transformer>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>junit:junit</artifact>
+                                    <includes>
+                                        <include>junit/framework/**</include>
+                                        <include>org/junit/**</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>org/junit/experimental/**</exclude>
+                                        <exclude>org/junit/runners/**</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
