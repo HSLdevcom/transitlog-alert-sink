@@ -9,15 +9,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <common.version>1.0.8</common.version>
+        <common.version>1.4.4</common.version>
         <jackson.version>2.9.8</jackson.version>
     </properties>
 
     <repositories>
         <repository>
-          <id>bintray</id>
-          <name>bintray</name>
-          <url>https://dl.bintray.com/hsldevcom/maven</url>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/HSLdevcom/*</url>
         </repository>
     </repositories>
 
