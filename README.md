@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/HSLdevcom/transitlog-alert-sink.svg?branch=master)](https://travis-ci.org/HSLdevcom/transitlog-alert-sink)
+#[![Build Status](https://travis-ci.org/HSLdevcom/transitlog-alert-sink.svg?branch=master)](https://travis-ci.org/HSLdevcom/transitlog-alert-sink)
 
 ## Description
 
