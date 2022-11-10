@@ -38,8 +38,8 @@ jobs:
         uses: elgohr/Publish-Docker-Github-Action@v4
         with:
           name: hsldevcom/transitlog-alert-sink
-          username: ${{ secrets.TRANSITLOG_DOCKERHUB_USER }}
-          password: ${{ secrets.TRANSITLOG_DOCKERHUB_TOKEN }}
+          username: ${{ secrets.TRANSITDATA_DOCKERHUB_USER }}
+          password: ${{ secrets.TRANSITDATA_DOCKERHUB_TOKEN }}
           tags: develop
   build-release-docker-image:
     needs: test
@@ -57,6 +57,6 @@ jobs:
         uses: elgohr/Publish-Docker-Github-Action@v4
         with:
           name: hsldevcom/transitlog-alert-sink
-          username: ${{ secrets.TRANSITLOG_DOCKERHUB_USER }}
-          password: ${{ secrets.TRANSITLOG_DOCKERHUB_TOKEN }}
+          username: ${{ secrets.TRANSITDATA_DOCKERHUB_USER }}
+          password: ${{ secrets.TRANSITDATA_DOCKERHUB_TOKEN }}
           tag_semver: true
