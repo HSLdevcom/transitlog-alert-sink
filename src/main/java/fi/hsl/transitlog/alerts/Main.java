@@ -25,8 +25,7 @@ public class Main {
             log.info("Starting to process messages");
 
             app.launchWithHandler(processor);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Exception at main", e);
             if (writer != null) {
                 writer.close();
