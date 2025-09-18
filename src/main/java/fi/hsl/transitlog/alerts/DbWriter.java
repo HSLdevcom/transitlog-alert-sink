@@ -30,13 +30,13 @@ public class DbWriter {
         calendar = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
 
         final String dbAddress = config.getString("db.address");
-        log.info("Connecting to database: "+ dbAddress);
+        log.info("Connecting to database: " + dbAddress);
 
         final String dbUsername = System.getProperty("db.username");
         final String dbPassword = System.getProperty("db.password");
 
         final String connectionString = "jdbc:postgresql://" + dbAddress + "/citus?user=" + dbUsername
-                + "&sslmode=require&reWriteBatchedInserts=true&password="+ dbPassword;
+                + "&sslmode=require&reWriteBatchedInserts=true&password=" + dbPassword;
 
         Connection conn = DriverManager.getConnection(connectionString);
         conn.setAutoCommit(true);
@@ -45,20 +45,10 @@ public class DbWriter {
     }
 
     private String createInsertStatement() {
-        return new StringBuffer()
-                .append("INSERT INTO alert (")
-                .append("route_id, ")
-                .append("stop_id, ")
-                .append("affects_all_routes, ")
-                .append("affects_all_stops, ")
-                .append("valid_from, ")
-                .append("valid_to, ")
-                .append("last_modified, ")
-                .append("data, ")
-                .append("ext_id_bulletin")
-                .append(") VALUES (")
-                .append("?, ?, ?, ?, ?, ?, ?, ?::JSON, ?")
-                .append(") ON CONFLICT DO NOTHING;") // Let's just ignore duplicates
+        return new StringBuffer().append("INSERT INTO alert (").append("route_id, ").append("stop_id, ")
+                .append("affects_all_routes, ").append("affects_all_stops, ").append("valid_from, ")
+                .append("valid_to, ").append("last_modified, ").append("data, ").append("ext_id_bulletin")
+                .append(") VALUES (").append("?, ?, ?, ?, ?, ?, ?, ?::JSON, ?").append(") ON CONFLICT DO NOTHING;") // Let's just ignore duplicates
                 .toString();
     }
 
@@ -72,8 +62,9 @@ public class DbWriter {
             for (final InternalMessages.Bulletin.AffectedEntity entity : bulletin.getAffectedStopsList()) {
                 insert(bulletin, queryString, AffectedEntityType.STOP, entity);
             }
-            if ((bulletin.getAffectedRoutesCount() == 0 && bulletin.getAffectedStopsCount() == 0) &&
-                    ((bulletin.hasAffectsAllRoutes() && bulletin.getAffectsAllRoutes()) || (bulletin.hasAffectsAllStops() && bulletin.getAffectsAllStops()))) {
+            if ((bulletin.getAffectedRoutesCount() == 0 && bulletin.getAffectedStopsCount() == 0)
+                    && ((bulletin.hasAffectsAllRoutes() && bulletin.getAffectsAllRoutes())
+                            || (bulletin.hasAffectsAllStops() && bulletin.getAffectsAllStops()))) {
                 insert(bulletin, queryString, null, null);
             }
         } finally {
@@ -83,11 +74,11 @@ public class DbWriter {
     }
 
     private enum AffectedEntityType {
-        ROUTE,
-        STOP,
+        ROUTE, STOP,
     }
 
-    private void insert(final InternalMessages.Bulletin bulletin, final String queryString, final AffectedEntityType type, final InternalMessages.Bulletin.AffectedEntity entity) throws Exception {
+    private void insert(final InternalMessages.Bulletin bulletin, final String queryString,
+            final AffectedEntityType type, final InternalMessages.Bulletin.AffectedEntity entity) throws Exception {
         try (PreparedStatement statement = connection.prepareStatement(queryString)) {
             int index = 1;
 
@@ -96,15 +87,15 @@ public class DbWriter {
                 setNullable(index++, null, Types.VARCHAR, statement);
             } else {
                 switch (type) {
-                    case ROUTE:
+                    case ROUTE :
                         setNullable(index++, entity.getEntityId(), Types.VARCHAR, statement);
                         setNullable(index++, null, Types.VARCHAR, statement);
                         break;
-                    case STOP:
+                    case STOP :
                         setNullable(index++, null, Types.VARCHAR, statement);
                         setNullable(index++, entity.getEntityId(), Types.VARCHAR, statement);
                         break;
-                    default:
+                    default :
                         setNullable(index++, null, Types.VARCHAR, statement);
                         setNullable(index++, null, Types.VARCHAR, statement);
                         break;
@@ -120,9 +111,12 @@ public class DbWriter {
             } else {
                 setNullable(index++, false, Types.BOOLEAN, statement);
             }
-            setNullable(index++, Timestamp.from(Instant.ofEpochMilli(bulletin.getValidFromUtcMs())), Types.TIMESTAMP_WITH_TIMEZONE, statement);
-            setNullable(index++, Timestamp.from(Instant.ofEpochMilli(bulletin.getValidToUtcMs())), Types.TIMESTAMP_WITH_TIMEZONE, statement);
-            setNullable(index++, Timestamp.from(Instant.ofEpochMilli(bulletin.getLastModifiedUtcMs())), Types.TIMESTAMP_WITH_TIMEZONE, statement);
+            setNullable(index++, Timestamp.from(Instant.ofEpochMilli(bulletin.getValidFromUtcMs())),
+                    Types.TIMESTAMP_WITH_TIMEZONE, statement);
+            setNullable(index++, Timestamp.from(Instant.ofEpochMilli(bulletin.getValidToUtcMs())),
+                    Types.TIMESTAMP_WITH_TIMEZONE, statement);
+            setNullable(index++, Timestamp.from(Instant.ofEpochMilli(bulletin.getLastModifiedUtcMs())),
+                    Types.TIMESTAMP_WITH_TIMEZONE, statement);
 
             // set json data
             final ObjectNode json = JsonNodeFactory.instance.objectNode();
@@ -158,8 +152,7 @@ public class DbWriter {
 
             setNullable(index++, bulletin.getBulletinId(), Types.VARCHAR, statement);
             statement.execute();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Failed to insert service alert to database: ", e);
             throw e;
         }
@@ -173,30 +166,39 @@ public class DbWriter {
     private void setNullable(int index, Object value, int jdbcType, PreparedStatement statement) throws SQLException {
         if (value == null) {
             statement.setNull(index, jdbcType);
-        }
-        else {
+        } else {
             //This is just awful but Postgres driver does not support setObject(value, type);
             //Leaving null values not set is also not an option.
             switch (jdbcType) {
-                case Types.BOOLEAN: statement.setBoolean(index, (Boolean)value);
+                case Types.BOOLEAN :
+                    statement.setBoolean(index, (Boolean) value);
                     break;
-                case Types.INTEGER: statement.setInt(index, (Integer) value);
+                case Types.INTEGER :
+                    statement.setInt(index, (Integer) value);
                     break;
-                case Types.BIGINT: statement.setLong(index, (Long)value);
+                case Types.BIGINT :
+                    statement.setLong(index, (Long) value);
                     break;
-                case Types.DOUBLE: statement.setDouble(index, (Double) value);
+                case Types.DOUBLE :
+                    statement.setDouble(index, (Double) value);
                     break;
-                case Types.DATE: statement.setDate(index, (Date)value);
+                case Types.DATE :
+                    statement.setDate(index, (Date) value);
                     break;
-                case Types.TIME: statement.setTime(index, (Time)value);
+                case Types.TIME :
+                    statement.setTime(index, (Time) value);
                     break;
-                case Types.TIMESTAMP_WITH_TIMEZONE: statement.setTimestamp(index, (Timestamp)value, calendar);
+                case Types.TIMESTAMP_WITH_TIMEZONE :
+                    statement.setTimestamp(index, (Timestamp) value, calendar);
                     break;
-                case Types.VARCHAR: statement.setString(index, (String)value); //Not sure if this is correct, field in schema is TEXT
+                case Types.VARCHAR :
+                    statement.setString(index, (String) value); //Not sure if this is correct, field in schema is TEXT
                     break;
-                case Types.JAVA_OBJECT: statement.setObject(index, value);
+                case Types.JAVA_OBJECT :
+                    statement.setObject(index, value);
                     break;
-                default: log.error("Invalid jdbc type, bug in the app! {}", jdbcType);
+                default :
+                    log.error("Invalid jdbc type, bug in the app! {}", jdbcType);
                     break;
             }
         }

@@ -26,26 +26,25 @@ public class MessageProcessor implements IMessageHandler {
 
     @Override
     public void handleMessage(Message message) throws Exception {
-        if (TransitdataSchema.hasProtobufSchema(message, TransitdataProperties.ProtobufSchema.TransitdataServiceAlert)) {
+        if (TransitdataSchema.hasProtobufSchema(message,
+                TransitdataProperties.ProtobufSchema.TransitdataServiceAlert)) {
             InternalMessages.ServiceAlert alert = InternalMessages.ServiceAlert.parseFrom(message.getData());
 
             for (final InternalMessages.Bulletin bulletin : alert.getBulletinsList()) {
                 writer.insert(bulletin);
             }
-        }
-        else {
+        } else {
             log.warn("Invalid protobuf schema");
         }
         ack(message.getMessageId());
     }
 
     private void ack(MessageId received) {
-        consumer.acknowledgeAsync(received)
-                .exceptionally(throwable -> {
-                    log.error("Failed to ack Pulsar message", throwable);
-                    return null;
-                })
-                .thenRun(() -> {});
+        consumer.acknowledgeAsync(received).exceptionally(throwable -> {
+            log.error("Failed to ack Pulsar message", throwable);
+            return null;
+        }).thenRun(() -> {
+        });
     }
 
 }
