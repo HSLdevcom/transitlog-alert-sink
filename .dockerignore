@@ -1,0 +1,10 @@
+**
+!src/
+!src/**
+!run/
+!run/**
+!.mvn/
+!.mvn/**
+!mvnw
+!pom.xml
+!eclipse-java-formatter.xml

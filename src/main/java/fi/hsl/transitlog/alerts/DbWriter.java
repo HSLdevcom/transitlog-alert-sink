@@ -32,8 +32,8 @@ public class DbWriter {
         final String dbAddress = config.getString("db.address");
         log.info("Connecting to database: " + dbAddress);
 
-        final String dbUsername = System.getProperty("db.username");
-        final String dbPassword = System.getProperty("db.password");
+        final String dbUsername = getDatabaseCredential("db.username", "TRANSITLOG_TIMESCALE_USERNAME");
+        final String dbPassword = getDatabaseCredential("db.password", "TRANSITLOG_TIMESCALE_PASSWORD");
 
         final String connectionString = "jdbc:postgresql://" + dbAddress + "/citus?user=" + dbUsername
                 + "&sslmode=require&reWriteBatchedInserts=true&password=" + dbPassword;
@@ -42,6 +42,15 @@ public class DbWriter {
         conn.setAutoCommit(true);
         log.info("Connection success");
         return new DbWriter(conn);
+    }
+
+    private static String getDatabaseCredential(String systemProperty, String environmentVariable) {
+        final String value = System.getProperty(systemProperty, System.getenv(environmentVariable));
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException(
+                    "Missing database credential: configure " + systemProperty + " or " + environmentVariable);
+        }
+        return value;
     }
 
     private String createInsertStatement() {

@@ -24,12 +24,21 @@ Either use released versions from public maven repository or build your own and 
 
 ### Locally
 
-- ```mvn compile```  
-- ```mvn package```  
+Requires JDK 25.
+
+- ```./mvnw compile test```
+- ```./mvnw package```
 
 ### Docker image
 
-- Run [this script](build-image.sh) to build the Docker image
+BuildKit and GitHub credentials with access to the `transitdata-common` package are required:
+
+```sh
+DOCKER_BUILDKIT=1 docker build \
+  --secret id=github_token,env=GITHUB_TOKEN \
+  --secret id=github_actor,env=GITHUB_ACTOR \
+  -t hsldevcom/transitlog-alert-sink .
+```
 
 
 ## Running
