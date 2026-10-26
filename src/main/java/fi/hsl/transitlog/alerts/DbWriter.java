@@ -44,7 +44,7 @@ public class DbWriter {
         return new DbWriter(conn);
     }
 
-    private static String getDatabaseCredential(String systemProperty, String environmentVariable) {
+    static String getDatabaseCredential(String systemProperty, String environmentVariable) {
         final String value = System.getProperty(systemProperty, System.getenv(environmentVariable));
         if (value == null || value.isBlank()) {
             throw new IllegalStateException(
