@@ -1,9 +1,9 @@
 name: "Code analysis"
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
   schedule:
     - cron: '0 8 * * *'
 jobs:
@@ -21,11 +21,23 @@ jobs:
         include:
         - language: actions
           build-mode: none
-        - language: JavaScript
-          build-mode: none
+        - language: java-kotlin
+          build-mode: autobuild
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+    - name: Set up Java
+      if: matrix.language == 'java-kotlin'
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: '25'
+        server-id: github
+        server-username: GITHUB_ACTOR
+        server-password: GITHUB_TOKEN
+      env:
+        GITHUB_ACTOR: ${{ github.actor }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
