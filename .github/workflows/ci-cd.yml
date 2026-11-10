@@ -5,6 +5,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   ci-cd:
     uses: HSLdevcom/transitdata-shared-workflows/.github/workflows/ci-cd-java.yml@234db0afad207e5af97e17e597b9f0933d22b4c0
