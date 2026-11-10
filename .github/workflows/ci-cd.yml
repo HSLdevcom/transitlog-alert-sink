@@ -13,6 +13,4 @@ jobs:
       packages: read
     with:
       runTestsInsideDocker: true
-    secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    secrets: inherit # zizmor: ignore[secrets-inherit] called workflow does not declare workflow_call secrets
