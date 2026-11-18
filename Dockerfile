@@ -19,4 +19,4 @@ COPY --from=build /usr/app/run /run
 RUN useradd --system --uid 10001 --create-home --home-dir /home/app --shell /usr/sbin/nologin app
 USER app
 
-ENTRYPOINT ["java", "-XX:InitialRAMPercentage=10.0", "-XX:MaxRAMPercentage=95.0", "-jar", "/usr/app/transitlog-alert-sink.jar"]
+ENTRYPOINT ["java", "-XX:-UseBASE64Intrinsics", "-XX:InitialRAMPercentage=10.0", "-XX:MaxRAMPercentage=95.0", "-jar", "/usr/app/transitlog-alert-sink.jar"]
